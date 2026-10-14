@@ -1,0 +1,15 @@
+[package]
+name = "probe"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "Hardware probe: opens the XM5 control channel and prints what it says"
+publish = false
+
+[dependencies]
+objc2 = "0.6.5"
+objc2-foundation = "0.3.2"
+objc2-io-bluetooth = "0.3.2"
+mdr-proto = { path = "../mdr-proto" }

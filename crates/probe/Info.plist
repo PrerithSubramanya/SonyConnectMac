@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleIdentifier</key><string>dev.local.xm5probe</string>
+    <key>CFBundleName</key><string>XM5 Probe</string>
+    <key>CFBundleExecutable</key><string>probe</string>
+    <key>CFBundlePackageType</key><string>APPL</string>
+    <key>CFBundleVersion</key><string>1</string>
+    <key>CFBundleShortVersionString</key><string>0.1</string>
+    <key>LSUIElement</key><true/>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>Talks to your Sony WH-1000XM5 to read its battery and settings.</string>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>Talks to your Sony WH-1000XM5 to read its battery and settings.</string>
+</dict>
+</plist>

@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>XM5</title>
+  <link rel="stylesheet" href="popup.css">
+  <script type="importmap">{"imports":{"three":"./vendor/three.module.min.js"}}</script>
+</head>
+<body data-phase="nearby" data-mode="nc">
+  <main class="card" id="card">
+    <section class="stage">
+      <div class="glow"></div>
+      <div class="rings"><i></i><i></i><i></i></div>
+      <div id="hp-mount"></div>
+    </section>
+
+    <div class="head">
+      <div>
+        <h1 id="title">WH-1000XM5</h1>
+        <p class="sub"><span class="dot"></span><span id="subtitle">Nearby</span></p>
+      </div>
+      <div class="batt" aria-label="Battery">
+        <svg viewBox="0 0 30 30" aria-hidden="true">
+          <circle class="track" cx="15" cy="15" r="12" fill="none" stroke-width="3.5"/>
+          <circle class="bar" id="ring" cx="15" cy="15" r="12" fill="none" stroke-width="3.5" transform="rotate(-90 15 15)" stroke-dasharray="75.4" stroke-dashoffset="75.4"/>
+        </svg>
+        <div><span id="pct">--%</span><small id="battNote">&nbsp;</small></div>
+      </div>
+    </div>
+
+    <div class="phase phase-nearby">
+      <button class="btn primary" id="connect">Connect</button>
+      <button class="btn ghost" id="notnow">Not Now</button>
+    </div>
+
+    <div class="phase phase-connecting">
+      <button class="btn primary busy" disabled><span class="spin"></span>Connecting&hellip;</button>
+    </div>
+
+    <div class="phase phase-error">
+      <p class="err" id="err"></p>
+      <button class="btn primary" id="retry">Try Again</button>
+      <button class="btn ghost" id="dismissErr">Not Now</button>
+    </div>
+
+    <div class="phase phase-connected">
+      <div class="seg tabs" id="tabs" style="--n:3">
+        <button data-tab="sound" class="on">Sound</button>
+        <button data-tab="eq" data-feature="eq">Equalizer</button>
+        <button data-tab="system">System</button>
+      </div>
+
+      <div class="scroller">
+        <!-- SOUND -->
+        <section class="tab on" id="tab-sound">
+          <div data-feature="nc">
+            <div class="seg mode" id="ncSeg" style="--n:3" role="group" aria-label="Noise control">
+              <button data-mode="nc">
+                <svg viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="13" width="4" height="7" rx="1.5"/><rect x="17" y="13" width="4" height="7" rx="1.5"/></svg>
+                Noise Cancel
+              </button>
+              <button data-mode="ambient">
+                <svg viewBox="0 0 24 24"><path d="M5 9a8 8 0 0 1 0 6"/><path d="M9 6.5a12 12 0 0 1 0 11"/><circle cx="15" cy="12" r="2.2"/><path d="M19 8.5a6 6 0 0 1 0 7"/></svg>
+                Ambient
+              </button>
+              <button data-mode="off">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M6.5 17.5l11-11"/></svg>
+                Off
+              </button>
+            </div>
+            <div class="group" id="ambGroup">
+              <div class="item stack" data-feature="ambient-level">
+                <div class="txt"><b>Ambient sound level</b></div>
+                <div class="range"><input type="range" id="amb" min="0" max="20" step="1"><output id="ambOut">0</output></div>
+              </div>
+              <div class="item" data-feature="voice-focus">
+                <div class="txt"><b>Focus on voice</b><span>Lets voices through and softens other sounds.</span></div>
+                <label class="sw"><input type="checkbox" id="voice"><i></i></label>
+              </div>
+            </div>
+          </div>
+          <div class="group" data-feature="speak-to-chat">
+            <div class="item">
+              <div class="txt"><b>Speak-to-Chat</b><span>Pauses music and lets voices in when you start talking.</span></div>
+              <label class="sw"><input type="checkbox" data-toggle="speakToChat"><i></i></label>
+            </div>
+          </div>
+        </section>
+
+        <!-- EQUALIZER -->
+        <section class="tab" id="tab-eq">
+          <div class="group"><div class="chips" id="presets"></div></div>
+          <div class="group"><div class="eq" id="eqBands"></div></div>
+        </section>
+
+        <!-- SYSTEM -->
+        <section class="tab" id="tab-system">
+          <div class="group" id="sysGroup1">
+            <div class="item" data-feature="wear-pause">
+              <div class="txt"><b>Pause when removed</b><span>Stops playback when you take the headphones off.</span></div>
+              <label class="sw"><input type="checkbox" data-toggle="wearPause"><i></i></label>
+            </div>
+            <div class="item" data-feature="auto-power-off">
+              <div class="txt"><b>Automatic power off</b></div>
+              <select data-choice="autoPowerOff" id="apoSelect"></select>
+            </div>
+          </div>
+          <div class="group">
+            <div class="item" data-feature="connection-quality">
+              <div class="txt"><b>Connection quality</b></div>
+              <select data-choice="connectionQuality">
+                <option value="sound">Sound quality</option>
+                <option value="stable">Stable connection</option>
+              </select>
+            </div>
+            <div class="item" data-feature="dsee">
+              <div class="txt"><b>DSEE upscaling</b><span>Restores detail lost in compressed music.</span></div>
+              <label class="sw"><input type="checkbox" data-toggle="dsee"><i></i></label>
+            </div>
+          </div>
+          <div class="group" id="gsGroup"></div>
+          <p class="about" id="about"></p>
+        </section>
+      </div>
+    </div>
+    <div class="sheet" id="alertSheet" hidden>
+      <div class="panel">
+        <b id="alertTitle">Your headphones ask</b>
+        <p id="alertText"></p>
+        <div class="acts">
+          <button id="alertNo">Cancel</button>
+          <button id="alertYes" class="primary">Continue</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="headphone.js"></script>
+  <script src="shared.js"></script>
+  <script type="module">
+    import { createHeadphoneView } from './headphone3d.js';
+
+    const $ = (id) => document.getElementById(id);
+    const card = $('card');
+    const has = (s, f) => !!s.features && s.features.includes(f);
+    const CIRC = 2 * Math.PI * 12;
+    const BANDS = ['Bass', '400', '1k', '2.5k', '6.3k', '16k'];
+    document.documentElement.classList.add(xm5.isMock ? 'mock' : 'native');
+
+    // ---- 3D headphone, with the flat drawing as a fallback if WebGL is unavailable ----
+    let hp = null;
+    try {
+      hp = createHeadphoneView($('hp-mount'));
+    } catch (e) {
+      console.warn('WebGL unavailable, using the flat drawing', e);
+      $('hp-mount').innerHTML = headphoneSVG();
+    }
+
+    let lastPhase = null;
+    let hideTimer = null;
+    let interactive = false;
+
+    function dismiss() {
+      clearTimeout(hideTimer);
+      xm5.call('dismiss_popup'); // the native side fades the window out
+      if (xm5.isMock) { card.style.transition = 'opacity .25s'; card.style.opacity = 0; }
+    }
+    function armAutoHide(ms) {
+      clearTimeout(hideTimer);
+      if (interactive) return; // opened from the menu bar: stays until clicked away
+      hideTimer = setTimeout(() => { if (!card.matches(':hover')) dismiss(); else armAutoHide(ms); }, ms);
+    }
+
+    function setRange(input, v) {
+      input.value = v;
+      input.style.setProperty('--p', ((v - input.min) / (input.max - input.min)) * 100 + '%');
+    }
+
+    // ---- build the EQ widgets once ----
+    const bandInputs = BANDS.map((label, i) => {
+      const l = document.createElement('label');
+      l.innerHTML = `<output>0</output><div class="v"><input type="range" min="-10" max="10" step="1" value="0"></div><span>${label}</span>`;
+      const input = l.querySelector('input');
+      input.oninput = () => { l.querySelector('output').textContent = input.value; setRange(input, +input.value); };
+      input.onchange = () => xm5.call('set_eq', i === 0 ? { clearBass: +input.value } : { band: i - 1, value: +input.value });
+      $('eqBands').appendChild(l);
+      return input;
+    });
+
+    let presetKey = '';
+    function renderPresets(s) {
+      const key = JSON.stringify(s.eq.presets);
+      if (key !== presetKey) {
+        presetKey = key;
+        $('presets').innerHTML = '';
+        s.eq.presets.forEach((p) => {
+          const b = document.createElement('button');
+          b.className = 'chip'; b.textContent = p.name; b.dataset.id = p.id;
+          b.onclick = () => xm5.call('set_eq', { preset: p.id });
+          $('presets').appendChild(b);
+        });
+      }
+      $('presets').querySelectorAll('.chip').forEach((c) => c.classList.toggle('on', +c.dataset.id === s.eq.preset));
+    }
+
+    let gsKey = '';
+    function renderSettings(s) {
+      const key = JSON.stringify((s.settings || []).map((x) => [x.id, x.label]));
+      if (key !== gsKey) {
+        gsKey = key;
+        $('gsGroup').innerHTML = '';
+        (s.settings || []).forEach((x) => {
+          const row = document.createElement('div');
+          row.className = 'item';
+          row.innerHTML = `<div class="txt"><b></b><span></span></div><label class="sw"><input type="checkbox"><i></i></label>`;
+          row.querySelector('b').textContent = x.label;
+          row.querySelector('span').textContent = x.summary;
+          row.querySelector('span').hidden = !x.summary;
+          const input = row.querySelector('input');
+          input.dataset.gs = x.id;
+          input.onchange = () => xm5.call('set_setting', { id: x.id, on: input.checked });
+          $('gsGroup').appendChild(row);
+        });
+      }
+      $('gsGroup').hidden = !(s.settings && s.settings.length);
+      $('gsGroup').querySelectorAll('input').forEach((i) => {
+        const x = s.settings.find((y) => String(y.id) === i.dataset.gs);
+        if (x) i.checked = x.on;
+      });
+    }
+
+    const APO_LABELS = { off: 'Never', removed: 'When removed from ears', '5m': '5 minutes', '15m': '15 minutes', '30m': '30 minutes', '60m': '1 hour', '180m': '3 hours' };
+    let apoKey = '';
+    function renderPowerOff(s) {
+      const opts = s.autoPowerOffOptions || [];
+      const key = opts.join(',');
+      if (key !== apoKey) {
+        apoKey = key;
+        $('apoSelect').innerHTML = opts.map((o) => `<option value="${o}">${APO_LABELS[o] || o}</option>`).join('');
+      }
+      // Only offer the setting once the headphones have said which choices they accept.
+      $('apoSelect').closest('.item').hidden = opts.length < 2 || !has(s, 'auto-power-off');
+    }
+
+    function render(s) {
+      const phase = s.presence;
+      document.body.dataset.phase = phase;
+      document.body.dataset.mode = s.nc ? s.nc.mode : 'off';
+      $('title').textContent = s.name;
+      $('subtitle').textContent = { nearby: 'Nearby', absent: 'Not nearby', connecting: 'Connecting…', connected: 'Connected', error: 'Not connected' }[phase] || '';
+      $('err').textContent = s.error || 'Could not connect. Make sure the headphones are on and not busy with another device.';
+      if (hp) { hp.setColor(s.color); hp.setPhase(phase); }
+
+      if (s.battery) {
+        const pct = Math.max(0, Math.min(100, s.battery.level));
+        $('ring').style.strokeDashoffset = CIRC * (1 - pct / 100);
+        $('ring').style.stroke = pct <= 15 ? 'var(--bad)' : pct <= 30 ? 'var(--warn)' : 'var(--good)';
+        $('pct').textContent = pct + '%';
+        $('battNote').textContent = s.battery.charging ? 'Charging' : 'Battery';
+      }
+
+      // Hide any control the headphones do not support (or this app cannot drive yet).
+      document.querySelectorAll('[data-feature]').forEach((el) => { el.hidden = !has(s, el.dataset.feature); });
+
+      // Sound
+      const modes = ['nc', 'ambient', 'off'];
+      const i = Math.max(0, modes.indexOf(s.nc.mode));
+      $('ncSeg').style.setProperty('--i', i);
+      $('ncSeg').querySelectorAll('button').forEach((b) => b.classList.toggle('on', b.dataset.mode === modes[i]));
+      $('ambGroup').style.display = s.nc.mode === 'ambient' ? '' : 'none';
+      setRange($('amb'), s.nc.ambientLevel); $('ambOut').textContent = s.nc.ambientLevel;
+      $('voice').checked = !!s.nc.voiceFocus;
+      document.querySelectorAll('[data-toggle]').forEach((el) => { el.checked = !!s[el.dataset.toggle]; });
+      renderPowerOff(s);
+      document.querySelectorAll('[data-choice]').forEach((el) => { el.value = s[el.dataset.choice]; });
+
+      // Equalizer
+      renderPresets(s);
+      bandInputs.forEach((inp, k) => {
+        const v = k === 0 ? s.eq.clearBass : s.eq.bands[k - 1];
+        setRange(inp, v);
+        inp.parentElement.parentElement.querySelector('output').textContent = v;
+      });
+
+      renderSettings(s);
+      // A question from the headphones, for example "switching multipoint will briefly disconnect".
+      const alert = s.alert;
+      $('alertSheet').hidden = !alert;
+      if (alert) {
+        $('alertTitle').textContent = alert.choice ? 'Your headphones ask' : 'Note from your headphones';
+        $('alertText').textContent = alert.text;
+        $('alertNo').hidden = !alert.choice;
+        $('alertYes').textContent = alert.choice ? 'Continue' : 'OK';
+      }
+      $('about').textContent = [s.name, s.firmware ? 'Firmware ' + s.firmware : ''].filter(Boolean).join(' · ');
+      $('tabs').querySelector('[data-tab="eq"]').hidden = !has(s, 'eq');
+
+      if (phase !== lastPhase) {
+        if (phase === 'connected') armAutoHide(9000); else clearTimeout(hideTimer);
+        lastPhase = phase;
+      }
+    }
+
+    // ---- actions ----
+    $('connect').onclick = () => xm5.call('connect');
+    $('retry').onclick = () => xm5.call('connect');
+    $('notnow').onclick = dismiss;
+    $('dismissErr').onclick = dismiss;
+    $('ncSeg').querySelectorAll('button').forEach((b) => { b.onclick = () => xm5.call('set_nc', { mode: b.dataset.mode }); });
+    $('amb').oninput = (e) => { setRange(e.target, e.target.value); $('ambOut').textContent = e.target.value; };
+    $('amb').onchange = (e) => xm5.call('set_nc', { ambientLevel: +e.target.value });
+    $('voice').onchange = (e) => xm5.call('set_nc', { voiceFocus: e.target.checked });
+    document.querySelectorAll('[data-toggle]').forEach((el) => { el.onchange = () => xm5.call('set_toggle', { key: el.dataset.toggle, value: el.checked }); });
+    document.querySelectorAll('[data-choice]').forEach((el) => {
+      el.onchange = () => xm5.call('set_choice', { key: el.dataset.choice, value: el.value });
+      // The dropdown list takes focus away from the window. Keep the popover open meanwhile.
+      el.onfocus = () => xm5.call('hold_popup', { on: true });
+      el.onblur = () => xm5.call('hold_popup', { on: false });
+    });
+    $('tabs').querySelectorAll('button').forEach((b, idx) => {
+      b.onclick = () => {
+        $('tabs').style.setProperty('--i', idx);
+        $('tabs').querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b));
+        document.querySelectorAll('.tab').forEach((t) => t.classList.toggle('on', t.id === 'tab-' + b.dataset.tab));
+      };
+    });
+    $('alertYes').onclick = () => xm5.call('answer_alert', { positive: true });
+    $('alertNo').onclick = () => xm5.call('answer_alert', { positive: false });
+    // Touching the popup means the user is using it: stop the auto-hide.
+    card.addEventListener('pointerdown', () => { interactive = true; clearTimeout(hideTimer); });
+
+    // ---- show / hide from the native side ----
+    function onShow(opts) {
+      interactive = !!(opts && opts.interactive);
+      lastPhase = null;
+      if (hp) { hp.replayIntro(); hp.start(); }
+      render(xm5.state);
+      // A hidden page may not have measured itself. Measure again now that it is showing.
+      const fit = () => xm5.call('resize_popup', { height: Math.ceil(card.offsetHeight) });
+      requestAnimationFrame(fit);
+      setTimeout(fit, 120);
+      setTimeout(fit, 500);
+    }
+    if (window.__TAURI__) {
+      window.__TAURI__.event.listen('xm5-popup-show', (e) => onShow(e.payload));
+      // A menu-bar app must not keep a WebGL loop running in a hidden window.
+      window.__TAURI__.event.listen('xm5-popup-hidden', () => hp && hp.stop());
+    } else if (hp) {
+      hp.start();
+    }
+
+    // The window is exactly the card: the native glass fills it and draws the shadow.
+    new ResizeObserver(() => xm5.call('resize_popup', { height: Math.ceil(card.offsetHeight) })).observe(card);
+
+    xm5.onState(render);
+  </script>
+</body>
+</html>

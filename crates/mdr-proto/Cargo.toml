@@ -1,0 +1,10 @@
+[package]
+name = "mdr-proto"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "Sony MDR wire protocol (framing, ACK link, messages) for the WH-1000XM5 family, pure Rust"
+
+[dependencies]

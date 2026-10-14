@@ -1,0 +1,20 @@
+XM5 Popup uses the following third-party work.
+
+Protocol knowledge
+  SonyHeadphonesClient (libmdr), https://github.com/mos9527/SonyHeadphonesClient
+  MIT License, Copyright (c) 2026 mos9527, Amr Satrio and other contributors.
+  Framing, checksums, command ids and message layouts in crates/mdr-proto were learned from it
+  and then checked against a real WH-1000XM5. No source code was copied.
+
+three.js r170 (ui/vendor/three.module.min.js, ui/vendor/RoomEnvironment.js)
+  https://threejs.org  MIT License, Copyright 2010-2024 Three.js Authors.
+  RoomEnvironment is based on the environment scene of Google's model-viewer
+  (https://github.com/google/model-viewer, Apache License 2.0).
+
+Rust crates (Tauri, objc2, btleplug, tokio, serde and others) are used under their own
+MIT / Apache-2.0 licences. See Cargo.lock for the full list.
+
+Trademarks
+  "Sony", "WH-1000XM5" and "Sound Connect" are trademarks of Sony Group Corporation. This project
+  is not affiliated with or endorsed by Sony. The name is used only to say what it works with.
+  The app contains no Sony logo, photo or model.

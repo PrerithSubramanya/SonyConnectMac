@@ -1,0 +1,30 @@
+[package]
+name = "xm5-popup"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "Menu-bar popover and controls for the Sony WH-1000XM5 on macOS"
+publish = false
+
+[features]
+default = ["custom-protocol"]
+# Serve the bundled ui/ folder instead of a dev server. Always on for this app.
+custom-protocol = ["tauri/custom-protocol"]
+
+[build-dependencies]
+tauri-build = "2.7.2"
+
+[dependencies]
+btleplug = "0.13.5"
+futures = "0.3.34"
+mdr-proto = { path = "../mdr-proto" }
+objc2 = "0.6.5"
+objc2-app-kit = "0.3.2"
+objc2-foundation = "0.3.2"
+objc2-io-bluetooth = "0.3.2"
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.154"
+tauri = { version = "2.12.3", features = ["macos-private-api", "tray-icon", "image-png"] }
+tokio = { version = "1.53.3", features = ["rt-multi-thread", "macros", "time", "sync"] }

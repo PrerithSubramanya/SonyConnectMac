@@ -1,0 +1,21 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "XM5 Popup",
+  "version": "0.1.0",
+  "identifier": "dev.local.xm5popup",
+  "build": {
+    "frontendDist": "../../ui"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "macOSPrivateApi": true,
+    "windows": [],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": false,
+    "icon": ["icons/icon.png", "icons/icon.icns"]
+  }
+}
