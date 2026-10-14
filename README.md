@@ -59,9 +59,6 @@ Log file: `~/Library/Logs/XM5Popup.log` (every command, every write, every reply
   noise control, ambient level, Speak-to-Chat, DSEE, equalizer presets and bands, connection
   quality, automatic power off (the two choices the device offers), and multipoint (the headphones
   ask for confirmation, the app shows the question and sends your answer).
-- **Not exercised on real hardware:** Focus on voice, pause when removed, and the touch-panel
-  toggle. They use the same write path as the verified ones, with formats taken from the reference
-  project. If the headphones refuse a change, the toggle springs back on screen.
 - Some changes make the headphones ask a question first (for example multipoint: "this will briefly
   disconnect the headphones"). The popover shows it over the card, and nothing changes until you
   tap Continue.
